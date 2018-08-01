@@ -127,11 +127,11 @@
           "z": -3.0
         },
         "color": {
-          "red": 0.3,
-          "green": 0.0,
-          "blue": 1.0
+          "red": 0.0,
+          "green": 1.0,
+          "blue": 0.0
         },
-        "intensity": 1000.0
+        "intensity": 500.0
       }
     },
     {
@@ -142,9 +142,9 @@
           "z": -2.0
         },
         "color": {
-          "red": 0.9,
-          "green": 0.3,
-          "blue": 0.3
+          "red": 1.0,
+          "green": 0.0,
+          "blue": 0.0
         },
         "intensity": 500.0
       }
@@ -157,14 +157,23 @@
           "z": -1.0
         },
         "color": {
-          "red": 1.0,
-          "green": 1.0,
+          "red": 0.0,
+          "green": 0.0,
           "blue": 1.0
         },
-        "intensity": 0.0
+        "intensity": 100.0
       }
     }
   ],
   "shadow_bias": 1e-13,
-  "max_recursion_depth": 10
+  "max_recursion_depth": 10,
+  "deltas": [
+    {
+      "sphere_0":{
+        "x":0.0,
+        "y":1.0,
+        "z":0.0
+      }
+    }
+  ]
 }
