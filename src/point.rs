@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Sub, SubAssign};
 use vector::Vector3;
 
 #[derive(Copy, Clone, Debug, Deserialize)]
@@ -66,4 +66,13 @@ impl Sub<Point> for Point {
             z: self.z - other.z,
         }
     }
+}
+
+impl SubAssign<Point> for Point {
+    //type Output = Point;
+    fn sub_assign(&mut self, other: Point) {
+            self.x -= other.x;
+            self.y -= other.y;
+            self.z -= other.z;
+        }
 }

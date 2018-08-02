@@ -1,12 +1,17 @@
 use point::Point;
 use vector::Vector3;
 use rendering::{Intersectable, Ray, TextureCoords};
+
 use std::ops::{Mul, Add};
 use std::path::PathBuf;
+use std::fmt;
+use std::collections::HashMap;
+
 use image;
 use image::{DynamicImage, Rgba, GenericImage, Pixel};
-use std::fmt;
 use serde::{Deserialize, Deserializer};
+
+
 
 const GAMMA: f32 = 2.2;
 
@@ -46,6 +51,14 @@ impl Color {
             red: gamma_decode((rgba.data[0] as f32) / 255.0),
             green: gamma_decode((rgba.data[1] as f32) / 255.0),
             blue: gamma_decode((rgba.data[2] as f32) / 255.0),
+        }
+    }
+
+    pub fn new() -> Color {
+        Color {
+            red: 0.0,
+            green: 0.0,
+            blue: 0.0
         }
     }
 }
@@ -94,6 +107,21 @@ pub fn load_texture<D>(deserializer: D) -> Result<DynamicImage, D::Error>
     let path = PathBuf::deserialize(deserializer)?;
     Ok(image::open(path).expect("Unable to open texture file"))
 }
+
+/*
+#[derive(Deserialize)]
+pub struct AdvancedColoration  {
+    color: Color,
+    #[serde(deserialize_with="load_texture")]
+    image: DynamicImage
+}
+
+impl AdvancedColoration {
+    pub fn new() -> AdvancedColoration {
+
+    }
+}
+*/
 
 #[derive(Deserialize)]
 pub enum Coloration {
@@ -171,6 +199,18 @@ pub enum Element {
     Plane(Plane),
 }
 impl Element {
+    
+    pub fn shift_element(&mut self, shift_amount: &Point) {
+            match *self {
+                Element::Sphere(ref mut s) => {
+                    s.center -= *shift_amount;
+                },
+                Element::Plane(ref mut p) => {
+                    p.origin -= *shift_amount
+                }
+            }
+    }
+
     pub fn material(&self) -> &Material {
         match *self {
             Element::Sphere(ref s) => &s.material,
@@ -244,11 +284,23 @@ pub struct Scene {
     pub width: u32,
     pub height: u32,
     pub fov: f64,
-    pub elements: Vec<Element>,
+    pub elements: HashMap<String, Element>,
     pub lights: Vec<Light>,
-
     pub shadow_bias: f64,
     pub max_recursion_depth: u32,
+    pub deltas: Vec<HashMap<String, Point>>
+}
+
+impl Scene {
+    pub fn shift_element(&mut self, name: String, shift_amount: &Point) {
+        let element_option = self.elements.get_mut(&name);
+        match element_option {
+             Some(e) => {
+                 e.shift_element(shift_amount);
+             },
+             None => {}
+        }
+    }
 }
 
 pub struct Intersection<'a> {
@@ -274,8 +326,14 @@ impl<'a> Intersection<'a> {
 impl Scene {
     pub fn trace(&self, ray: &Ray) -> Option<Intersection> {
         self.elements
+            .values()
+            .filter_map(|e| e.intersect(ray).map(|d| Intersection::new(d, e)))
+            .min_by(|i1, i2| i1.distance.partial_cmp(&i2.distance).unwrap())
+            /*
+        self.elements
             .iter()
             .filter_map(|e| e.intersect(ray).map(|d| Intersection::new(d, e)))
             .min_by(|i1, i2| i1.distance.partial_cmp(&i2.distance).unwrap())
+            */
     }
 }
