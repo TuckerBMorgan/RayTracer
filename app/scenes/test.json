@@ -1,6 +1,6 @@
 {
-  "width": 6400,
-  "height": 4800,
+  "width": 800,
+  "height": 400,
   "fov": 90.0,
   "elements": {
     "sphere_0" : {
@@ -175,5 +175,6 @@
         "z":0.0
       }
     }
-  ]
+  ],
+  "scene_count":0
 }
