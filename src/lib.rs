@@ -13,7 +13,7 @@ mod matrix;
 
 use scene::{Scene};//, Color};
 use image::{DynamicImage, GenericImage, ImageBuffer, Rgba};
-
+ 
 use rendering::{Ray, cast_ray};
 
 pub fn render(scene: &Scene, i: usize, sections: usize) -> DynamicImage {

@@ -11,8 +11,6 @@ use image;
 use image::{DynamicImage, Rgba, GenericImage, Pixel};
 use serde::{Deserialize, Deserializer};
 
-
-
 const GAMMA: f32 = 2.2;
 
 fn gamma_encode(linear: f32) -> f32 {
@@ -288,18 +286,36 @@ pub struct Scene {
     pub lights: Vec<Light>,
     pub shadow_bias: f64,
     pub max_recursion_depth: u32,
-    pub deltas: Vec<HashMap<String, Point>>
+    pub deltas: Vec<HashMap<String, Point>>,
+    pub scene_count: usize//each scene file must have this as a member, this is not a 
+    //good long term soution
+    //serde needs to have every member of a struct present in the JSON that it consumes
+    //so if it isnt there it fails and panics
+    //a better long term solution would be to seperate the delats from the scenes they modify
 }
 
 impl Scene {
-    pub fn shift_element(&mut self, name: String, shift_amount: &Point) {
-        let element_option = self.elements.get_mut(&name);
+    pub fn shift_element(&mut self, name: &String, shift_amount: &Point) {
+        let element_option = self.elements.get_mut(name);
         match element_option {
              Some(e) => {
                  e.shift_element(shift_amount);
              },
              None => {}
         }
+    }
+
+    pub fn update(&mut self) -> usize {
+        if self.scene_count >= self.deltas.len() {
+            return 1;
+        }
+
+        let updates_to_apply = &self.deltas[self.scene_count].clone();
+        for (k, v) in updates_to_apply.iter() {
+            self.shift_element(k, v);
+        }
+        self.scene_count += 1;
+        return 0;
     }
 }
 

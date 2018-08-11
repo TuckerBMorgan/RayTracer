@@ -237,7 +237,7 @@ fn get_color(scene: &Scene, ray: &Ray, intersection: &Intersection, depth: u32) 
             let mut color = shade_diffuse(scene, intersection.element, hit, normal);
             let reflection_ray =
                 Ray::create_reflection(normal, ray.direction, hit, scene.shadow_bias);
-            color = color * (1.0 - reflectivity);
+            color = color * (1.0 - reflectivity) * 0.1;
             color = color + (cast_ray(scene, &reflection_ray, depth + 1) * reflectivity);
             color
         }

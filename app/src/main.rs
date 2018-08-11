@@ -48,11 +48,15 @@ fn save_film_to_disk(mut render_frames: Vec<ImageSection>,
     let mut final_image_buffer : Vec<u8> = vec![];
     for ele in &render_frames {
         let mut pixel_array = ele.2.raw_pixels();
+    // println!("Number of pixels added to buffer {}", pixel_array.len());
         final_image_buffer.append(&mut pixel_array);
     }
-    let image_as_chunks = final_image_buffer.chunks((number_of_frames as u32 * image_height * image_width) as usize);//.chunk_to_vec();
-   // let mut file_name = "out0.png";
 
+    //println!("number of pixels submitted to image saving {}", final_image_buffer.len());
+    //println!("single chunk size {}", number_of_frames as u32 * image_height * image_width * 3);
+    let image_as_chunks = final_image_buffer.chunks((image_height * image_width) as usize * 3);//.chunk_to_vec();
+   // let mut file_name = "out0.png";
+   // println!("{}", image_as_chunks.len());
     let mut count = 0;
     for chunk in image_as_chunks {
         let image_buf = ImageBuffer::<Rgb<u8>, Vec<u8>>::from_raw(image_width, image_height, chunk.to_vec()).unwrap();
@@ -101,7 +105,7 @@ fn render_image(scene_file_path: String, number_of_render_threads: usize, output
         finished_count+=1;
      //   println!("{}", finished_count);
     }
-   // println!("{}", rendered_sections.len());
+
     let elasped = now.elapsed();
     println!("{:?}", elasped);
 
