@@ -30,7 +30,6 @@ fn render_chunk(thread_index: usize, total_sections:usize, sender: Sender<ImageS
                 break;
             }
         }
-
 }
 
 fn save_film_to_disk(mut render_frames: Vec<ImageSection>,

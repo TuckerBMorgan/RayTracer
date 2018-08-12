@@ -1,6 +1,6 @@
 {
-  "width": 3840,
-  "height": 2160,
+  "width": 960,
+  "height": 540,
   "fov": 90.0,
   "elements": {
     "sphere_0" : {
@@ -110,7 +110,11 @@
         },
         "material": {
           "coloration": {
-            "Texture": "scenes/checkerboard.png"
+            "Color": {
+              "red":0.0,
+              "green":1.0,
+              "blue":0.0
+            }
           },
           "albedo": 0.38,
           "surface": "Diffuse"
